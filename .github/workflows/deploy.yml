@@ -62,8 +62,8 @@ jobs:
       - name: Extract project version
         id: extract_version
         run: |
-          echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec-args='${project.version} --non-recursive exec:exec')" >> $GITHUB_OUTPUT
-        
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       - name: Build Application
         run: ./mvnw clean package -DskipTests
 
