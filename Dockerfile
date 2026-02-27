@@ -9,6 +9,7 @@ COPY src src
 
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
+RUN JAR_FILE=$(ls /app/target/*.jar | grep -v '\.original$' | head -n 1) && cp "$JAR_FILE" /app/app.jar
 
 # Runtime stage
 FROM eclipse-temurin:17-jdk-jammy
@@ -16,13 +17,12 @@ ARG PROFILE=dev
 ARG APP_VERSION=1.0.0
 
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/
+COPY --from=build /app/app.jar /app/app.jar
 
 EXPOSE 8080
 
 ENV DB_URL=jdbc:postgres://postgres-sql-spring-app:5432/spring_app_db
 
 ENV ACTIVE_PROFILE=${PROFILE} 
-ENV JAR_VERSION=${APP_VERSION}
 
-CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} spring-app-${JAR_VERSION}.jar
+CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} /app/app.jar
