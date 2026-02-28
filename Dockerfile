@@ -14,7 +14,6 @@ RUN JAR_FILE=$(ls /app/target/*.jar | grep -v '\.original$' | head -n 1) && cp "
 # Runtime stage
 FROM eclipse-temurin:17-jdk-jammy
 ARG PROFILE=dev
-ARG APP_VERSION=1.0.0
 
 WORKDIR /app
 COPY --from=build /app/app.jar /app/app.jar
